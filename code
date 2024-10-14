@@ -1,0 +1,95 @@
+
+package Vagas_reservadas;
+
+import java.util.ArrayList;
+
+public class VagasReservadas<E extends ReservationEntry> {
+    public static final int CAPACIDADE = 15;
+    protected int size = 0;
+    protected E[] parkingSlots;
+
+    @SuppressWarnings("unchecked")
+    public VagasReservadas() {
+        parkingSlots = (E[]) new ReservationEntry[CAPACIDADE];
+    }
+
+    public int size() {
+        return size;
+    }
+
+    public boolean isEmpty() {
+        return size() == 0;
+    }
+
+    public boolean reservarVaga(String name, String placa) {
+        if (size >= CAPACIDADE) {
+            return false; // Estacionamento cheio
+        }
+        for (int i = 0; i < CAPACIDADE; i++) {
+            if (parkingSlots[i] == null) {
+                parkingSlots[i] = (E) new ReservationEntry(name, placa);
+                size++;
+                return true; // Reserva feita com sucesso
+            }
+        }
+        return false; // Não deveria chegar aqui, mas para segurança
+    }
+
+    public boolean liberarVaga(String placa) {
+        for (int i = 0; i < CAPACIDADE; i++) {
+            if (parkingSlots[i] != null && parkingSlots[i].getPlaca().equals(placa)) {
+                parkingSlots[i] = null;
+                size--;
+                reorganizarVagas();
+                return true; // Vaga liberada com sucesso
+            }
+        }
+        return false; // Veículo não encontrado
+    }
+
+    private void reorganizarVagas() {
+        ArrayList<E> tempList = new ArrayList<>();
+        for (E entry : parkingSlots) {
+            if (entry != null) {
+                tempList.add(entry);
+            }
+        }
+        for (int i = 0; i < CAPACIDADE; i++) {
+            if (i < tempList.size()) {
+                parkingSlots[i] = tempList.get(i);
+            } else {
+                parkingSlots[i] = null;
+            }
+        }
+        size = tempList.size(); // Atualiza o tamanho
+    }
+
+    public void listarReservas() {
+        System.out.println("Vagas Ocupadas:");
+        for (int i = 0; i < CAPACIDADE; i++) {
+            if (parkingSlots[i] != null) {
+                System.out.println("Vaga " + (i + 1) + ": " +
+                        parkingSlots[i].getName() + " - " +
+                        parkingSlots[i].getPlaca());
+            }
+        }
+    }
+}
+
+class ReservationEntry {
+    private String name;
+    private String placa;
+
+    public ReservationEntry(String name, String placa) {
+        this.name = name;
+        this.placa = placa;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPlaca() {
+        return placa;
+    }
+}
