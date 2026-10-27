@@ -1,19 +1,38 @@
-Enunciado da Atividade: Sistema de Reserva de Vagas de Estacionamento
+# Reserva de vagas de estacionamento
 
-Você deve desenvolver uma aplicação que simule a gestão de um sistema de reserva de vagas de estacionamento em um condomínio. O estacionamento tem capacidade máxima de 15 vagas, e essas vagas devem ser atribuídas de acordo com as reservas feitas pelos moradores.
+Exercício de Java com uma implementação inicial de reservas em memória para um estacionamento de condomínio com **15 vagas**.
 
-Regras:
+## Conteúdo real
 
-1. O número de vagas disponíveis é limitado a 15, armazenadas em um arranjo chamado parkingSlots. Inicialmente, todas as vagas estão desocupadas (null).
-2. Cada vaga pode ser reservada por um objeto da classe ReservationEntry, que contém o nome do morador e a placa do veículo.
-3. A reserva de uma vaga deve seguir uma ordem de chegada: o primeiro a solicitar uma vaga ocupa a primeira disponível. Não pode haver "buracos" entre as vagas ocupadas; quando uma vaga é desocupada, as reservas subsequentes devem ser deslocadas para preencher os espaços.
-4. Se todas as vagas estiverem ocupadas, uma nova reserva só poderá ser feita quando uma vaga for liberada (você deverá implementar uma função de cancelamento de reserva).
-5. A aplicação deve permitir:
-   - Reservar uma vaga para um morador (inserindo o nome e a placa do carro).
-   - Cancelar uma reserva (liberar a vaga).
-   - Listar todas as vagas ocupadas com seus respectivos moradores e placas de veículos.
+- `code`: arquivo de texto sem extensão, contendo o pacote `Vagas_reservadas`, a classe pública `VagasReservadas<E extends ReservationEntry>` e a classe auxiliar `ReservationEntry`.
+- `README.md`: documentação do exercício.
 
+## Regras do exercício e implementação
 
-Objetivos da Implementação:
-- Gerenciar dinamicamente a lista de reservas, sempre garantindo que as vagas ocupadas estejam ordenadas sem espaços vazios no arranjo.
-- Implementar as classes e métodos necessários para adicionar, remover e consultar reservas, respeitando as regras definidas.
+Cada reserva guarda nome do morador e placa do veículo. O arranjo `parkingSlots` começa com posições nulas.
+
+| Método | Comportamento presente |
+| --- | --- |
+| `size()`, `isEmpty()` | Consultam a quantidade de reservas |
+| `reservarVaga(name, placa)` | Insere na primeira posição livre; retorna falso quando cheio |
+| `liberarVaga(placa)` | Remove a primeira reserva com a placa e reorganiza o arranjo |
+| `reorganizarVagas()` | Método privado que compacta as reservas preservando sua ordem |
+| `listarReservas()` | Imprime posições ocupadas, nomes e placas no console |
+
+A ordem de chegada é representada pela inserção na primeira posição livre. Não existe fila de espera: ao atingir 15 reservas, uma nova solicitação é recusada até haver liberação.
+
+## Estrutura Java e uso
+
+Para experimentar sem alterar o arquivo original, copie `code` para uma pasta de trabalho como `Vagas_reservadas/VagasReservadas.java`. O nome do arquivo deve corresponder à classe pública. Configure um JDK e compile essa cópia:
+
+```sh
+javac -encoding UTF-8 -d build Vagas_reservadas/VagasReservadas.java
+```
+
+O uso de conversões para o tipo genérico pode gerar avisos de compilação. Não há `main`, menu ou teste automatizado versionado; para chamar os métodos, é necessário um programa de exemplo separado. `ReservationEntry` tem acesso de pacote, o que também deve ser considerado ao criar esse exemplo.
+
+## Limitações
+
+Os dados só existem em memória. Não há banco de dados, interface gráfica, autenticação, validação de nomes/placas ou bloqueio de placas duplicadas. A capacidade é fixa e a posição exibida pode mudar após um cancelamento. O parâmetro genérico é limitado a `ReservationEntry`, mas o método de reserva instancia diretamente essa classe auxiliar.
+
+O enunciado pede adicionar, cancelar e listar reservas sem deixar espaços entre posições ocupadas; o código contém esses métodos, sem comprovação por testes automatizados. Esta revisão documental preserva o arquivo `code` e a privacidade do repositório.
